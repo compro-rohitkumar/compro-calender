@@ -186,14 +186,14 @@ const closeModal = () => {
 };
 const deleteEvent = async () => {
   if (props.event.startTime) {
-    const deleteTask = await fetch(`api/event/${props.event._id}`, {
+    const deleteTask = await fetch(`/api/event/${props.event._id}`, {
       method: "DELETE",
     });
     if (deleteTask.status === 200) {
       emit("deleteEvent", props.event._id);
     }
   }
-  const deleteTask = await fetch(`api/eventhour/${props.event._id}`, {
+  const deleteTask = await fetch(`/api/eventhour/${props.event._id}`, {
     method: "DELETE",
   });
   if (deleteTask.status === 200) emit("deleteEvent", props.event._id);
