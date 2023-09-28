@@ -1,0 +1,30 @@
+{
+  "name": "nuxt-app",
+  "private": true,
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare"
+  },
+  "devDependencies": {
+    "@types/node": "^18.17.3",
+    "nuxt": "^3.6.5"
+  },
+  "dependencies": {
+    "@nuxt/eslint-config": "^0.1.1",
+    "@nuxt/http": "^0.6.4",
+    "@nuxtjs/apollo": "^4.0.1-rc.5",
+    "@nuxtjs/eslint-module": "^4.1.0",
+    "bcrypt": "^5.1.1",
+    "eslint": "^8.46.0",
+    "graphql": "^15.8.0",
+    "graphql-tag": "^2.12.6",
+    "joi": "^17.10.1",
+    "lodash": "^4.17.21",
+    "mongoose": "^7.5.0",
+    "nuxt-graphql-middleware": "^2.2.0",
+    "vue-uuid": "^3.0.0"
+  }
+}
