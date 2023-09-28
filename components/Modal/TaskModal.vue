@@ -185,7 +185,7 @@ const closeModal = () => {
   emit("closeTaskModal");
 };
 const deleteEvent = async () => {
-  if (props.event.startTime) {
+  if (!props.event.startTime) {
     const deleteTask = await fetch(`/api/event/${props.event._id}`, {
       method: "DELETE",
     });
