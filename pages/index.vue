@@ -1,23 +1,58 @@
 <template>
-  <ModalAddNewEvent  :date="date" :users="users" :event="event"  @closeModal="closeModal" v-if="modal" />
-  <ModalAddNewEventHour  :dateAndTime="date"  :users="users" :event="event" @closeModal="closeHourModal" v-if="modalHour" />
-  <TaskModal v-if="taskModal" :event="event" @closeTaskModal="toggleTaskModal" @deleteEvent="deleteEvent" @editEvent="editEvent"/>
-  <AllEventModal v-if="showAllEvent" :event="event" @closeAllEventModal="toggleViewAllEvent" @showTask="showTask"/>
+  <ModalAddNewEvent
+    :date="date"
+    :users="users"
+    :event="event"
+    @closeModal="closeModal"
+    v-if="modal"
+  />
+  <ModalAddNewEventHour
+    :dateAndTime="date"
+    :users="users"
+    :event="event"
+    @closeModal="closeHourModal"
+    v-if="modalHour"
+  />
+  <TaskModal
+    v-if="taskModal"
+    :event="event"
+    @closeTaskModal="toggleTaskModal"
+    @deleteEvent="deleteEvent"
+    @editEvent="editEvent"
+  />
+  <AllEventModal
+    v-if="showAllEvent"
+    :event="event"
+    @closeAllEventModal="toggleViewAllEvent"
+    @showTask="showTask"
+  />
   <div class="root-container">
-    <Calender @openModal="toggleModal" :all_events="userCreatedEvent" :event_hour="userCreatedEventHour"  :selected_events="selected_events" @toggleModel="toggleModal" @toggleHourModel="toggleHourModel" @toggleTaskModal="toggleTaskModal" @toggleViewAllEvent="toggleViewAllEvent"/>
-    <EventNavBar :events="events" @addEvent="addEvent" @removeEvent="removeEvent" />
+    <Calender
+      @openModal="toggleModal"
+      :all_events="userCreatedEvent"
+      :event_hour="userCreatedEventHour"
+      :selected_events="selected_events"
+      @toggleModel="toggleModal"
+      @toggleHourModel="toggleHourModel"
+      @toggleTaskModal="toggleTaskModal"
+      @toggleViewAllEvent="toggleViewAllEvent"
+    />
+    <EventNavBar
+      :events="events"
+      @addEvent="addEvent"
+      @removeEvent="removeEvent"
+    />
   </div>
 </template>
 
 <script setup>
-
-import { uuid } from 'vue-uuid';
-
+import { uuid } from "vue-uuid";
+const route = useRoute();
 const modal = ref(false);
 const modalHour = ref(false);
 const date = ref(null);
 const userCreatedEvent = ref([]);
-const userCreatedEventHour = ref([]); 
+const userCreatedEventHour = ref([]);
 const taskModal = ref(false);
 const event = ref(null);
 const showAllEvent = ref(false);
@@ -27,25 +62,28 @@ const getId = () => {
 const users = ref([]);
 
 const getUsers = async () => {
-  const data =await fetch('http://localhost:3000/api/user');
+  const data = await fetch("/api/user");
   const res = await data.json();
   const users = res.map((item) => {
     const { _id, name } = item;
     return {
       name,
-      id:_id,
-    }
-  })
+      id: _id,
+    };
+  });
   return users;
-}
+};
 
-onMounted(()=>{
+onMounted(() => {
   const getData = async () => {
+    const link = route.path;
+    console.log(link);
     const data = await getUsers();
-    const eventdata = await fetch('http://localhost:3000/api/event');
+    const eventdata = await fetch("/api/event");
     const res = await eventdata.json();
     const events = res.map((item) => {
-      const { _id, name, user, EventId, startDate, endDate, description } = item;
+      const { _id, name, user, EventId, startDate, endDate, description } =
+        item;
       return {
         _id,
         what: name,
@@ -55,16 +93,26 @@ onMounted(()=>{
         startDate: new Date(startDate),
         endDate: new Date(endDate),
         eventDescription: description,
-      }
-    })
+      };
+    });
     userCreatedEvent.value = events;
     users.value = data;
-  }
+  };
   const getEventHour = async () => {
-    const eventdata = await fetch('http://localhost:3000/api/eventhour');
+    const eventdata = await fetch("/api/eventhour");
     const res = await eventdata.json();
     const events = res.map((item) => {
-      const { _id, name, user, EventId, startDate, endDate, startTime, endTime, description } = item;
+      const {
+        _id,
+        name,
+        user,
+        EventId,
+        startDate,
+        endDate,
+        startTime,
+        endTime,
+        description,
+      } = item;
       return {
         _id,
         what: name,
@@ -76,15 +124,14 @@ onMounted(()=>{
         startTime,
         endTime,
         eventDescription: description,
-      }
-    })
+      };
+    });
     userCreatedEventHour.value = events;
-  }
-
+  };
 
   getData();
   getEventHour();
-})
+});
 const events = ref([
   {
     name: "Holiday",
@@ -107,7 +154,6 @@ const events = ref([
 ]);
 const selected_events = ref(events.value.map((item) => item.id));
 
-
 const toggleModal = (dateOfClick) => {
   event.value = null;
   date.value = dateOfClick;
@@ -116,24 +162,28 @@ const toggleModal = (dateOfClick) => {
 };
 
 const toggleHourModel = (dateOfClick) => {
-  date.value = (dateOfClick);
+  date.value = dateOfClick;
   window.scrollTo(0, 0);
   modalHour.value = true;
 };
 
-const color = ["#F87171", "rgb(11, 128, 67)", "rgb(51,182,121)", "rgb(121,134,203)"];
+const color = [
+  "#F87171",
+  "rgb(11, 128, 67)",
+  "rgb(51,182,121)",
+  "rgb(121,134,203)",
+];
 
-
-const closeHourModal = async(prop =null) => {
-  
+const closeHourModal = async (prop = null) => {
   if (prop === null) {
     modalHour.value = false;
     return;
   }
-  if(prop._id){
-
-    const index = userCreatedEventHour.value.findIndex((item) => item._id === prop._id);
-    const data ={
+  if (prop._id) {
+    const index = userCreatedEventHour.value.findIndex(
+      (item) => item._id === prop._id
+    );
+    const data = {
       name: prop.what,
       user: prop.eventUser,
       id: prop.eventType,
@@ -142,16 +192,16 @@ const closeHourModal = async(prop =null) => {
       startTime: prop.startTime,
       endTime: prop.endTime,
       description: prop.eventDescription,
-    }
-    const postData = await fetch(`http://localhost:3000/api/eventhour/${prop._id}`, {
-      method: 'PUT',
+    };
+    const postData = await fetch(`/api/eventhour/${prop._id}`, {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
-    if(postData.status !== 200){
-      alert('Something went wrong');
+    if (postData.status !== 200) {
+      alert("Something went wrong");
       return;
     }
     const postEvent = await postData.json();
@@ -166,7 +216,7 @@ const closeHourModal = async(prop =null) => {
       startTime: postEvent.startTime,
       endTime: postEvent.endTime,
       eventDescription: postEvent.description,
-    }
+    };
     userCreatedEventHour.value = [...userCreatedEventHour.value];
     modalHour.value = false;
     return;
@@ -180,60 +230,64 @@ const closeHourModal = async(prop =null) => {
     startTime: prop.startTime,
     endTime: prop.endTime,
     description: prop.eventDescription,
-  }
-  const postData = await fetch('http://localhost:3000/api/eventhour/create', {
-    method: 'POST',
+  };
+  const postData = await fetch("/api/eventhour/create", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
-  if(postData.status !== 200){
-    alert('Something went wrong');
+  if (postData.status !== 200) {
+    alert("Something went wrong");
     return;
   }
- 
+
   const postEvent = await postData.json();
-  userCreatedEventHour.value = [...userCreatedEventHour.value, {
-    _id: postEvent._id,
-    what: postEvent.name,
-    eventUser: postEvent.user.name,
-    id: postEvent.EventId,
-    backgroundColor: color[postEvent.EventId],
-    startDate: new Date(postEvent.startDate),
-    endDate: new Date(postEvent.endDate),
-    startTime: postEvent.startTime,
-    endTime: postEvent.endTime,
-    eventDescription: postEvent.description,
-  }]
+  userCreatedEventHour.value = [
+    ...userCreatedEventHour.value,
+    {
+      _id: postEvent._id,
+      what: postEvent.name,
+      eventUser: postEvent.user.name,
+      id: postEvent.EventId,
+      backgroundColor: color[postEvent.EventId],
+      startDate: new Date(postEvent.startDate),
+      endDate: new Date(postEvent.endDate),
+      startTime: postEvent.startTime,
+      endTime: postEvent.endTime,
+      eventDescription: postEvent.description,
+    },
+  ];
   modalHour.value = false;
-}
+};
 
-
-const closeModal = async(prop = null) => {
+const closeModal = async (prop = null) => {
   if (prop === null) {
     modal.value = false;
     return;
   }
-  if(prop._id){
-    const index = userCreatedEvent.value.findIndex((item) => item._id === prop._id);
+  if (prop._id) {
+    const index = userCreatedEvent.value.findIndex(
+      (item) => item._id === prop._id
+    );
     const data = {
-    name: prop.what,
-    user: prop.eventUser,
-    id: prop.eventType,
-    startDate: prop.startDate,
-    endDate: prop.endDate,
-    description: prop.eventDescription,
-  }
-    const postData = await fetch(`http://localhost:3000/api/event/${prop._id}`, {
-      method: 'PUT',
+      name: prop.what,
+      user: prop.eventUser,
+      id: prop.eventType,
+      startDate: prop.startDate,
+      endDate: prop.endDate,
+      description: prop.eventDescription,
+    };
+    const postData = await fetch(`/api/event/${prop._id}`, {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify(data)
+      body: JSON.stringify(data),
     });
     const postEvent = await postData.json();
-  
+
     userCreatedEvent.value[index] = {
       _id: postEvent._id,
       what: postEvent.name,
@@ -243,13 +297,13 @@ const closeModal = async(prop = null) => {
       startDate: new Date(postEvent.startDate),
       endDate: new Date(postEvent.endDate),
       eventDescription: postEvent.description,
-    }
-    
+    };
+
     userCreatedEvent.value = [...userCreatedEvent.value];
     modal.value = false;
     return;
   }
-  
+
   const data = {
     name: prop.what,
     user: prop.eventUser,
@@ -257,73 +311,74 @@ const closeModal = async(prop = null) => {
     startDate: prop.startDate,
     endDate: prop.endDate,
     description: prop.eventDescription,
-  }
-  
-  const postData = await fetch('http://localhost:3000/api/event/create', {
-    method: 'POST',
+  };
+
+  const postData = await fetch("/api/event/create", {
+    method: "POST",
     headers: {
-      'Content-Type': 'application/json'
+      "Content-Type": "application/json",
     },
-    body: JSON.stringify(data)
+    body: JSON.stringify(data),
   });
-  
+
   const postEvent = await postData.json();
 
-  userCreatedEvent.value = [...userCreatedEvent.value, {
-    _id: postEvent._id,
-    what: postEvent.name,
-    eventUser: postEvent.user.name,
-    id: postEvent.EventId,
-    backgroundColor: color[postEvent.EventId],
-    startDate: new Date(postEvent.startDate),
-    endDate: new Date(postEvent.endDate),
-    eventDescription: postEvent.description,
+  userCreatedEvent.value = [
+    ...userCreatedEvent.value,
+    {
+      _id: postEvent._id,
+      what: postEvent.name,
+      eventUser: postEvent.user.name,
+      id: postEvent.EventId,
+      backgroundColor: color[postEvent.EventId],
+      startDate: new Date(postEvent.startDate),
+      endDate: new Date(postEvent.endDate),
+      eventDescription: postEvent.description,
+    },
+  ];
 
-  }]
-
-  
   modal.value = false;
-  
 };
-
-
 
 const addEvent = (prop) => {
   selected_events.value = [...selected_events.value, prop];
 };
 const removeEvent = (eventID) => {
-  selected_events.value = [...selected_events.value.filter((item) => item !== eventID)]
-
+  selected_events.value = [
+    ...selected_events.value.filter((item) => item !== eventID),
+  ];
 };
 const toggleTaskModal = (prop) => {
   event.value = prop;
   taskModal.value = !taskModal.value;
-}
-const toggleViewAllEvent = (prop=null) => {
-  if(prop === null){
+};
+const toggleViewAllEvent = (prop = null) => {
+  if (prop === null) {
     showAllEvent.value = !showAllEvent.value;
     return;
   }
   event.value = prop;
   showAllEvent.value = !showAllEvent.value;
-}
+};
 
 const deleteEvent = (prop) => {
   taskModal.value = false;
-  userCreatedEvent.value = [...userCreatedEvent.value.filter((item) => item._id !== prop)]
-  userCreatedEventHour.value = [...userCreatedEventHour.value.filter((item) => item._id !== prop)]
-}
+  userCreatedEvent.value = [
+    ...userCreatedEvent.value.filter((item) => item._id !== prop),
+  ];
+  userCreatedEventHour.value = [
+    ...userCreatedEventHour.value.filter((item) => item._id !== prop),
+  ];
+};
 const showTask = (prop) => {
- 
   event.value = prop;
   showAllEvent.value = false;
   taskModal.value = true;
-}
+};
 const editEvent = (prop) => {
   taskModal.value = false;
   let index = userCreatedEvent.value.findIndex((item) => item._id === prop);
-  if(index === -1){
-    
+  if (index === -1) {
     index = userCreatedEventHour.value.findIndex((item) => item._id === prop);
     const date = new Date(userCreatedEventHour.value[index].startDate);
     event.value = userCreatedEventHour.value[index];
@@ -333,13 +388,11 @@ const editEvent = (prop) => {
   const date = new Date(userCreatedEvent.value[index].startDate);
   event.value = userCreatedEvent.value[index];
   modal.value = true;
-  
-}
-
+};
 </script>
 
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Alata&family=Anton&family=Barlow+Semi+Condensed:wght@400;500;600&family=Josefin+Sans:wght@300&family=Open+Sans:ital,wght@0,300;1,300&family=Roboto:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Alata&family=Anton&family=Barlow+Semi+Condensed:wght@400;500;600&family=Josefin+Sans:wght@300&family=Open+Sans:ital,wght@0,300;1,300&family=Roboto:wght@300&display=swap");
 .root-container {
   /* margin: 14px 12px;
   padding: 16px 12px; */
@@ -347,8 +400,7 @@ const editEvent = (prop) => {
   flex-direction: row;
   justify-content: space-between;
   overflow-y: hidden;
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   min-width: 873px;
 }
-
 </style>
