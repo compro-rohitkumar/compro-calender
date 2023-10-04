@@ -1,111 +1,116 @@
 <template>
-    <div class="backdrop w-full"></div> 
-    <div class="Modal">
-      <div class="modal_container">
-        <div class="header">
+  <div class="backdrop w-full"></div>
+  <div class="Modal">
+    <div class="modal_container">
+      <div class="header">
         <img src="/images/close.svg" alt="close" @click="handleCancel" />
       </div>
-        <h1 class="m-4 text-2xl">Create Event</h1>
-        <div class="input">
+      <h1 class="m-4 text-2xl">Create Event</h1>
+      <div class="input">
         <input type="text" required v-model="what" />
-        <span class="floating-label">Event Name</span>
+        <span class="floating-label">Title</span>
         <i></i>
       </div>
-        <div class="input">
+      <div class="input">
         <input type="text" required v-model="eventDescription" />
         <span class="floating-label">Description</span>
         <i></i>
       </div>
-      <CustomSelect :options="props.users" :eventUser="eventUser" :default="eventUser.name" class="select" @input="handleInput"/>
-      <customSelectevent :options="eventOption" :default="selectedOption" class="select" @input="handleEvent" />
-        <div class="input_container">
-          <label class="event_label">Start Date</label>
-          <input type="date" v-model="eventStartDate" />
-        </div>
-        <div class="input_container">
-          <label class="event_label">End Date</label>
-          <input type="date" v-model="eventEndDate" />
-        </div>
-        <div class="input_container">
-          <label class="event_label">Start Time</label>
-          <input type="time" v-model="startTime" />
-        </div>
-        <div class="input_container">
-          <label class="event_label">End Time</label>
-          <input type="time"  v-model="endTime" />
-        </div>
-        <div class="input_container_button">
-          <button
-            type="submit"
-            :disabled="
+      <CustomSelect
+        :options="props.users"
+        :eventUser="eventUser"
+        :default="eventUser.name"
+        class="select"
+        @input="handleInput"
+      />
+      <customSelectevent
+        :options="eventOption"
+        :default="selectedOption"
+        class="select"
+        @input="handleEvent"
+      />
+      <div class="input_container">
+        <label class="event_label">Start Date</label>
+        <input type="date" v-model="eventStartDate" />
+      </div>
+      <div class="input_container">
+        <label class="event_label">End Date</label>
+        <input type="date" v-model="eventEndDate" />
+      </div>
+      <div class="input_container">
+        <label class="event_label">Start Time</label>
+        <input type="time" v-model="startTime" />
+      </div>
+      <div class="input_container">
+        <label class="event_label">End Time</label>
+        <input type="time" v-model="endTime" />
+      </div>
+      <div class="input_container_button">
+        <button
+          type="submit"
+          :disabled="
             what.trim() === '' ||
             eventType.trim() === '' ||
             eventStartDate.trim() === '' ||
             eventEndDate.trim() === ''
           "
-            @click="handleSubmit"
-          >
-            Save
-          </button>
-        </div>
+          @click="handleSubmit"
+        >
+          Save
+        </button>
       </div>
     </div>
-  </template>
+  </div>
+</template>
     
   <script setup>
+const props = defineProps({
+  dateAndTime: {
+    type: Date,
+    default: () => new Date(),
+  },
+  users: {
+    type: Array,
+    default: () => [],
+  },
+  event: {
+    type: Object,
+    default: null,
+  },
+});
+const eventOption = ref(["Holiday", "Birthday", "Leave"]);
+const data = new Date(props.dateAndTime);
+let hour = data.getHours();
+let min = data.getMinutes();
+let day = data.getDate();
+let month = data.getMonth() + 1;
+if (hour < 10) {
+  hour = "0" + hour;
+}
+if (min < 10) {
+  min = "0" + min;
+}
+const startTime = ref(`${hour}:${min}`);
+const endTime = ref(`${hour}:${min}`);
 
+if (day < 10) {
+  day = "0" + day;
+}
+if (month < 10) {
+  month = "0" + month;
+}
 
-  
-  
-  const props = defineProps({
-    dateAndTime: {
-      type: Date,
-      default: () => new Date(),
-    
-    },
-    users:{
-      type:Array,
-      default:()=>[]
-    },
-    event:{
-      type:Object,
-      default:null
-    }
-    
-  });
-  const eventOption =ref(["Holiday","Birthday","Leave"]);
-  const data = new Date(props.dateAndTime);
-  let hour = data.getHours();
-  let min = data.getMinutes();
-  let day = data.getDate();
-  let month = data.getMonth() + 1;
-  if(hour<10){
-    hour = "0"+hour;
-  }
-  if(min<10){
-    min = '0'+min;
-  }
-  const startTime = ref(`${hour}:${min}`);
-  const endTime = ref(`${hour}:${min}`);
-  
-  if (day < 10) {
-    day = "0" + day;
-  }
-  if (month < 10) {
-    month = "0" + month;
-  }
-    
-  const selectedOption = ref(eventOption.value[0]);
-  const eventStartDate = ref(`${data.getFullYear()}-${month}-${day}`);
-  const eventEndDate = ref(`${data.getFullYear()}-${month}-${day}`);
-  const what = ref("");
-  const eventType = ref("1");
-  const eventDescription = ref("");
-  const firstUser = props.users[0];
-  const eventUser = ref(firstUser);
-  const editEvent = ref(false);
+const selectedOption = ref(eventOption.value[0]);
+const eventStartDate = ref(`${data.getFullYear()}-${month}-${day}`);
+const eventEndDate = ref(`${data.getFullYear()}-${month}-${day}`);
+const what = ref("");
+const eventType = ref("1");
+const eventDescription = ref("");
+const firstUser = props.users[0];
+const eventUser = ref(firstUser);
+const editEvent = ref(false);
 
-  const buildDate = (prop)=>{
+const buildDate = (prop) => {
   const data = new Date(prop);
   let day = data.getDate();
   let month = data.getMonth() + 1;
@@ -117,90 +122,83 @@
     month = "0" + month;
   }
   return `${data.getFullYear()}-${month}-${day}`;
-}
+};
 
-const builtTime = (prop)=>{
- 
+const builtTime = (prop) => {
   const data = new Date(prop);
   let hour = data.getHours();
   let min = data.getMinutes();
-  if(hour<10){
-    hour = "0"+hour;
+  if (hour < 10) {
+    hour = "0" + hour;
   }
-  if(min<10){
-    min = '0'+min;
+  if (min < 10) {
+    min = "0" + min;
   }
   return `${hour}:${min}`;
-}
- 
-  if(props.event !== null){
-    editEvent.value = true;
-    const user = props.users.find((user) => user.name === (props.event.eventUser));
-    eventUser.value = user;
-    eventStartDate.value = buildDate(props.event.startDate);
-    eventEndDate.value = buildDate(props.event.endDate);
-    what.value = props.event.what;
-    eventDescription.value = props.event.eventDescription;
-    selectedOption.value = eventOption.value[Number(props.event.id)-1];
-    eventType.value = String(props.event.id);
-    
-    startTime.value = props.event.startTime;
-    endTime.value = props.event.endTime;
-  }
-  
-  const emit = defineEmits(["closeModal", "toggleModal"]);
-  
-  const getUserName = (id, users) => {
- 
-  const user = users.find((user) => user.id === Number(id));
- 
 };
-  
-  const handleSubmit = () => {
-    if(eventStartDate.value>eventEndDate.value){
-      alert("Start Date should be less than End Date");
-      return;
-    }
-    if(startTime.value>endTime.value){
-      alert("Start Time should be less than End Time");
-      return;
-    }
-    const evenDetail = {
-      eventUser: eventUser.value.id,
-      what: what.value,
-      eventType: Number(eventType.value),
-      startDate: eventStartDate.value,
-      endDate: eventEndDate.value,
-      startTime: startTime.value,
-      endTime: endTime.value,
-      eventDescription:eventDescription.value
-    };
-    if(editEvent.value){
-      evenDetail._id = props.event._id;
-    }
-    emit("closeModal", evenDetail);
-  };
-  const handleCancel = () => {
-    emit("closeModal");
-  };
 
-  const handleInput = (prop) => {
+if (props.event !== null) {
+  editEvent.value = true;
+  const user = props.users.find((user) => user.name === props.event.eventUser);
+  eventUser.value = user;
+  eventStartDate.value = buildDate(props.event.startDate);
+  eventEndDate.value = buildDate(props.event.endDate);
+  what.value = props.event.what;
+  eventDescription.value = props.event.eventDescription;
+  selectedOption.value = eventOption.value[Number(props.event.id) - 1];
+  eventType.value = String(props.event.id);
+
+  startTime.value = props.event.startTime;
+  endTime.value = props.event.endTime;
+}
+
+const emit = defineEmits(["closeModal", "toggleModal"]);
+
+const getUserName = (id, users) => {
+  const user = users.find((user) => user.id === Number(id));
+};
+
+const handleSubmit = () => {
+  if (eventStartDate.value > eventEndDate.value) {
+    alert("Start Date should be less than End Date");
+    return;
+  }
+  if (startTime.value > endTime.value) {
+    alert("Start Time should be less than End Time");
+    return;
+  }
+  const evenDetail = {
+    eventUser: eventUser.value.id,
+    what: what.value,
+    eventType: Number(eventType.value),
+    startDate: eventStartDate.value,
+    endDate: eventEndDate.value,
+    startTime: startTime.value,
+    endTime: endTime.value,
+    eventDescription: eventDescription.value,
+  };
+  if (editEvent.value) {
+    evenDetail._id = props.event._id;
+  }
+  emit("closeModal", evenDetail);
+};
+const handleCancel = () => {
+  emit("closeModal");
+};
+
+const handleInput = (prop) => {
   eventUser.value = prop;
-  
 };
 
 const handleEvent = (prop) => {
-  
   const event = eventOption.value.findIndex((item) => item === prop);
-  eventType.value = String(event+1);
-  selectedOption.value = prop
-  
+  eventType.value = String(event + 1);
+  selectedOption.value = prop;
 };
-
-  </script>
+</script>
     
   <style scoped>
- @import url("https://fonts.googleapis.com/css2?family=Alata&family=Anton&family=Barlow+Semi+Condensed:wght@400;500;600&family=Josefin+Sans:wght@300&family=Open+Sans:ital,wght@0,300;1,300&family=Roboto:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Alata&family=Anton&family=Barlow+Semi+Condensed:wght@400;500;600&family=Josefin+Sans:wght@300&family=Open+Sans:ital,wght@0,300;1,300&family=Roboto:wght@300&display=swap");
 
 .form {
   width: 100%;
@@ -312,8 +310,6 @@ const handleEvent = (prop) => {
   font-size: 1.2rem;
   font-family: "Roboto", sans-serif;
   padding-left: 17px;
-
-  
 }
 
 .input span {
@@ -322,7 +318,7 @@ const handleEvent = (prop) => {
   left: 16px;
   padding: 10px 0 10px;
   color: rgb(64, 64, 64);
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   pointer-events: none;
   letter-spacing: 1px;
   transition: 0.5s;
@@ -404,8 +400,8 @@ const handleEvent = (prop) => {
   justify-content: left;
   align-items: center;
   width: 80%;
-  margin-top:10px;
-  font-family: 'Roboto', sans-serif;
+  margin-top: 10px;
+  font-family: "Roboto", sans-serif;
   letter-spacing: 1px;
 }
 
@@ -428,11 +424,10 @@ select {
   align-self: flex-end;
   width: 80%;
   text-decoration: none;
- 
 }
 
 .input_container_button {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   margin: 10px;
   margin-top: 10px;
   display: flex;
@@ -484,8 +479,8 @@ select {
 .dropdown {
   position: relative;
   width: 400px;
-  margin-top:0;
-  padding-top:6px;
+  margin-top: 0;
+  padding-top: 6px;
   margin-bottom: 1rem;
   cursor: pointer;
   background: white;
@@ -494,7 +489,7 @@ select {
   padding: 2px 10px;
   border-radius: 10px;
 }
-.dropdown input{
+.dropdown input {
   width: 400px;
   position: relative;
   background: transparent;
@@ -508,32 +503,30 @@ select {
   border-bottom: 1px solid black;
   padding-top: 8px;
 }
-.dropdown input::placeholder{
-  
-  font-family: 'Roboto', sans-serif;
+.dropdown input::placeholder {
+  font-family: "Roboto", sans-serif;
   font-size: 1.1rem;
   letter-spacing: 0.2px;
-  color:rgb(64, 64, 64);
+  color: rgb(64, 64, 64);
 }
 .dropdown input::focus,
-.dropdown input::valid{
-  border-bottom: 1px solid ;
-  
+.dropdown input::valid {
+  border-bottom: 1px solid;
 }
-.dropdown .option{
-  position:absolute;
-  top:10;
+.dropdown .option {
+  position: absolute;
+  top: 10;
   left: 2px;
-  height:min-content;
-  width:100%;
+  height: min-content;
+  width: 100%;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   /* box-shadow: 0 30px 30px rgba(0, 0, 0, 0.01); */
-  z-index:50;
+  z-index: 50;
   overflow: hidden;
 }
-.dropdown .option div{
+.dropdown .option div {
   padding-top: 10px;
   padding-left: 20px;
   padding-right: 20px;
@@ -546,15 +539,15 @@ select {
   /* z-index:50; */
   margin-bottom: 10px;
 }
-.dropdown .option div:hover{
+.dropdown .option div:hover {
   background-color: #62baea;
   color: white;
 }
-.select{
-  width:400px;
-  margin-top:1rem;
-  margin-bottom: 1rem;;
+.select {
+  width: 400px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   /* height: 2rem; */
 }
-  </style>
+</style>
     

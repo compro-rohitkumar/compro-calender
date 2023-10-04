@@ -8,7 +8,7 @@
       </div>
       <div class="input">
         <input type="text" required v-model="what" />
-        <span class="floating-label">Event Name</span>
+        <span class="floating-label">Title</span>
         <i></i>
       </div>
       <div class="input">
@@ -25,8 +25,19 @@
        </div>ß
         
       </div> -->
-      <CustomSelect :options="props.users" :eventUser="eventUser" :default="eventUser.name" class="select" @input="handleInput"/>
-      <customSelectevent :options="eventOption" :default="selectedOption" class="select" @input="handleEvent" />
+      <CustomSelect
+        :options="props.users"
+        :eventUser="eventUser"
+        :default="eventUser.name"
+        class="select"
+        @input="handleInput"
+      />
+      <customSelectevent
+        :options="eventOption"
+        :default="selectedOption"
+        class="select"
+        @input="handleEvent"
+      />
       <div class="input_container">
         <label class="event_label">Start Date</label>
         <input type="date" v-model="eventStartDate" />
@@ -54,22 +65,19 @@
 </template>
   
 <script setup>
-
-
 const props = defineProps({
   date: {
     type: Date,
     default: () => new Date(),
   },
-  users:{
-    type:Array,
-    default:()=>[]
+  users: {
+    type: Array,
+    default: () => [],
   },
-  event:{
-    type:Object,
-    default:null
-  }
-  
+  event: {
+    type: Object,
+    default: null,
+  },
 });
 const data = new Date(props.date);
 let day = data.getDate();
@@ -81,7 +89,7 @@ if (day < 10) {
 if (month < 10) {
   month = "0" + month;
 }
-const buildDate = (prop)=>{
+const buildDate = (prop) => {
   const data = new Date(prop);
   let day = data.getDate();
   let month = data.getMonth() + 1;
@@ -93,15 +101,14 @@ const buildDate = (prop)=>{
     month = "0" + month;
   }
   return `${data.getFullYear()}-${month}-${day}`;
-}
-const sendUser = computed(()=>{
-  props.users.map((user)=>{
-    return user.name
-  })
-})
-const eventOption =ref(["Holiday","Birthday","Leave"]);
-const selectedOption = ref(eventOption.value[0])
-
+};
+const sendUser = computed(() => {
+  props.users.map((user) => {
+    return user.name;
+  });
+});
+const eventOption = ref(["Holiday", "Birthday", "Leave"]);
+const selectedOption = ref(eventOption.value[0]);
 
 const eventStartDate = ref(`${data.getFullYear()}-${month}-${day}`);
 const eventEndDate = ref(`${data.getFullYear()}-${month}-${day}`);
@@ -112,31 +119,27 @@ const eventType = ref("1");
 const eventDescription = ref("");
 const editEvent = ref(false);
 
+if (props.event !== null) {
+  editEvent.value = true;
+  const user = props.users.find((user) => user.name === props.event.eventUser);
+  eventUser.value = user;
+  eventStartDate.value = buildDate(props.event.startDate);
+  eventEndDate.value = buildDate(props.event.endDate);
+  what.value = props.event.what;
 
-if(props.event !== null){
-    editEvent.value = true;
-    const user = props.users.find((user) => user.name === (props.event.eventUser));
-    eventUser.value = user;
-    eventStartDate.value = buildDate(props.event.startDate);
-    eventEndDate.value = buildDate(props.event.endDate);
-    what.value = props.event.what;
-    
-    selectedOption.value = eventOption.value[Number(props.event.id)-1];
-    eventType.value = String(props.event.id);
-    eventDescription.value = props.event.eventDescription;
-   
+  selectedOption.value = eventOption.value[Number(props.event.id) - 1];
+  eventType.value = String(props.event.id);
+  eventDescription.value = props.event.eventDescription;
 }
-
 
 const emit = defineEmits(["closeModal", "toggleModal"]);
 
-
 const handleSubmit = () => {
-  if(eventStartDate.value>eventEndDate.value){
+  if (eventStartDate.value > eventEndDate.value) {
     alert("Start Date should be less than End Date");
     return;
   }
-  
+
   const evenDetail = {
     eventUser: eventUser.value.id,
     what: what.value,
@@ -145,8 +148,8 @@ const handleSubmit = () => {
     endDate: eventEndDate.value,
     eventDescription: eventDescription.value,
   };
- 
-  if(editEvent.value){
+
+  if (editEvent.value) {
     evenDetail._id = props.event._id;
   }
   emit("closeModal", evenDetail);
@@ -156,16 +159,13 @@ const handleCancel = () => {
 };
 const handleInput = (prop) => {
   eventUser.value = prop;
-  
 };
 
 const handleEvent = (prop) => {
   const event = eventOption.value.findIndex((item) => item === prop);
-  eventType.value = String(event+1);
-  selectedOption.value = prop
-  
+  eventType.value = String(event + 1);
+  selectedOption.value = prop;
 };
-
 </script>
   
 <style scoped>
@@ -281,8 +281,6 @@ const handleEvent = (prop) => {
   font-size: 1.2rem;
   font-family: "Roboto", sans-serif;
   padding-left: 17px;
-
-  
 }
 
 .input span {
@@ -291,7 +289,7 @@ const handleEvent = (prop) => {
   left: 16px;
   padding: 10px 0 10px;
   color: rgb(64, 64, 64);
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   pointer-events: none;
   letter-spacing: 1px;
   transition: 0.5s;
@@ -373,8 +371,8 @@ const handleEvent = (prop) => {
   justify-content: left;
   align-items: center;
   width: 80%;
-  margin-top:10px;
-  font-family: 'Roboto', sans-serif;
+  margin-top: 10px;
+  font-family: "Roboto", sans-serif;
   letter-spacing: 1px;
 }
 
@@ -397,11 +395,10 @@ select {
   align-self: flex-end;
   width: 80%;
   text-decoration: none;
- 
 }
 
 .input_container_button {
-  font-family: 'Roboto', sans-serif;
+  font-family: "Roboto", sans-serif;
   margin: 10px;
   margin-top: 10px;
   display: flex;
@@ -453,8 +450,8 @@ select {
 .dropdown {
   position: relative;
   width: 400px;
-  margin-top:0;
-  padding-top:6px;
+  margin-top: 0;
+  padding-top: 6px;
   margin-bottom: 1rem;
   cursor: pointer;
   background: white;
@@ -463,7 +460,7 @@ select {
   padding: 2px 10px;
   border-radius: 10px;
 }
-.dropdown input{
+.dropdown input {
   width: 400px;
   position: relative;
   background: transparent;
@@ -477,32 +474,30 @@ select {
   border-bottom: 1px solid black;
   padding-top: 8px;
 }
-.dropdown input::placeholder{
-  
-  font-family: 'Roboto', sans-serif;
+.dropdown input::placeholder {
+  font-family: "Roboto", sans-serif;
   font-size: 1.1rem;
   letter-spacing: 0.2px;
-  color:rgb(64, 64, 64);
+  color: rgb(64, 64, 64);
 }
 .dropdown input::focus,
-.dropdown input::valid{
-  border-bottom: 1px solid ;
-  
+.dropdown input::valid {
+  border-bottom: 1px solid;
 }
-.dropdown .option{
-  position:absolute;
-  top:10;
+.dropdown .option {
+  position: absolute;
+  top: 10;
   left: 2px;
-  height:min-content;
-  width:100%;
+  height: min-content;
+  width: 100%;
   display: flex;
   flex-direction: column;
   cursor: pointer;
   /* box-shadow: 0 30px 30px rgba(0, 0, 0, 0.01); */
-  z-index:50;
+  z-index: 50;
   overflow: hidden;
 }
-.dropdown .option div{
+.dropdown .option div {
   padding-top: 10px;
   padding-left: 20px;
   padding-right: 20px;
@@ -515,14 +510,14 @@ select {
   /* z-index:50; */
   margin-bottom: 10px;
 }
-.dropdown .option div:hover{
+.dropdown .option div:hover {
   background-color: #62baea;
   color: white;
 }
-.select{
-  width:400px;
-  margin-top:1rem;
-  margin-bottom: 1rem;;
+.select {
+  width: 400px;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
   /* height: 2rem; */
 }
 </style>

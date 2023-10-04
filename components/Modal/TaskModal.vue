@@ -161,17 +161,18 @@ const props = defineProps({
     required: true,
   },
 });
-if (props.event.color === undefined) {
-  props.event.color = props.event.backgroundColor;
-}
+
 if (props.event.name === undefined) {
   props.event.name = props.event.what;
 }
-if (props.event.start)
+
+onMounted(() => {
   document.documentElement.style.setProperty(
     "--primary-color",
     props.event.color
   );
+});
+
 const format_date = (date) => {
   const d = new Date(date);
   const ye = new Intl.DateTimeFormat("en", { year: "numeric" }).format(d);
