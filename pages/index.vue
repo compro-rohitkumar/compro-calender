@@ -141,8 +141,8 @@ const events = ref([
   },
   {
     name: "Birthday",
-    image: "/images/birthDay.svg",
-    fillImage: "/images/birthDay-fill.svg",
+    image: "/images/birthday.svg",
+    fillImage: "/images/birthday-fill.svg",
     id: 2,
   },
   {
