@@ -5,7 +5,12 @@
       <div class="header">
         <img src="/images/close.svg" alt="close" @click="handleCancel" />
       </div>
-      <h1 class="m-4 text-2xl">Create Event</h1>
+      <customSelectevent
+        :options="eventOption"
+        :default="selectedOption"
+        class="select"
+        @input="handleEvent"
+      />
       <div class="input">
         <input type="text" required v-model="what" />
         <span class="floating-label">Title</span>
@@ -19,15 +24,9 @@
       <CustomSelect
         :options="props.users"
         :eventUser="eventUser"
-        :default="eventUser.name"
+        :default="eventUser ? eventUser.name : null"
         class="select"
         @input="handleInput"
-      />
-      <customSelectevent
-        :options="eventOption"
-        :default="selectedOption"
-        class="select"
-        @input="handleEvent"
       />
       <div class="input_container">
         <label class="event_label">Start Date</label>
@@ -100,14 +99,14 @@ if (month < 10) {
   month = "0" + month;
 }
 
-const selectedOption = ref(eventOption.value[0]);
+const selectedOption = ref(null);
 const eventStartDate = ref(`${data.getFullYear()}-${month}-${day}`);
 const eventEndDate = ref(`${data.getFullYear()}-${month}-${day}`);
 const what = ref("");
 const eventType = ref("1");
 const eventDescription = ref("");
 const firstUser = props.users[0];
-const eventUser = ref(firstUser);
+const eventUser = ref(null);
 const editEvent = ref(false);
 
 const buildDate = (prop) => {
@@ -165,6 +164,14 @@ const handleSubmit = () => {
   }
   if (startTime.value > endTime.value) {
     alert("Start Time should be less than End Time");
+    return;
+  }
+  if (selectedOption.value === null) {
+    alert("Please select event type");
+    return;
+  }
+  if (eventUser.value === null) {
+    alert("Please select user");
     return;
   }
   const evenDetail = {

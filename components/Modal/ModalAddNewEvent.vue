@@ -6,6 +6,12 @@
       <div class="header">
         <img src="/images/close.svg" alt="close" @click="handleCancel" />
       </div>
+      <customSelectevent
+        :options="eventOption"
+        :default="selectedOption"
+        class="select"
+        @input="handleEvent"
+      />
       <div class="input">
         <input type="text" required v-model="what" />
         <span class="floating-label">Title</span>
@@ -28,15 +34,9 @@
       <CustomSelect
         :options="props.users"
         :eventUser="eventUser"
-        :default="eventUser.name"
+        :default="eventUser ? eventUser.name : null"
         class="select"
         @input="handleInput"
-      />
-      <customSelectevent
-        :options="eventOption"
-        :default="selectedOption"
-        class="select"
-        @input="handleEvent"
       />
       <div class="input_container">
         <label class="event_label">Start Date</label>
@@ -108,12 +108,12 @@ const sendUser = computed(() => {
   });
 });
 const eventOption = ref(["Holiday", "Birthday", "Leave"]);
-const selectedOption = ref(eventOption.value[0]);
+const selectedOption = ref(null);
 
 const eventStartDate = ref(`${data.getFullYear()}-${month}-${day}`);
 const eventEndDate = ref(`${data.getFullYear()}-${month}-${day}`);
 const firstUser = props.users[0];
-const eventUser = ref(firstUser);
+const eventUser = ref(null);
 const what = ref("");
 const eventType = ref("1");
 const eventDescription = ref("");
@@ -139,6 +139,14 @@ const handleSubmit = () => {
     alert("Start Date should be less than End Date");
     return;
   }
+  if (selectedOption.value === null) {
+    alert("Please select event type");
+    return;
+  }
+  if (eventUser.value === null) {
+    alert("Please select user");
+    return;
+  }
 
   const evenDetail = {
     eventUser: eventUser.value.id,
@@ -158,6 +166,7 @@ const handleCancel = () => {
   emit("closeModal");
 };
 const handleInput = (prop) => {
+  // console.log(prop);
   eventUser.value = prop;
 };
 
