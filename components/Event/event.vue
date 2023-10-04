@@ -1,8 +1,8 @@
 <template>
   <div class="event">
     <input type="checkbox" @click="handleClick()" checked />
-    <img :src="fillImage" alt="image" v-if="checked"/>
-    <img :src="image" alt="image" v-else/>
+    <img :src="fillImage" alt="image" v-if="checked" />
+    <img :src="image" alt="image" v-else />
     <p>{{ name }}</p>
   </div>
 </template>
@@ -53,10 +53,11 @@ const handleClick = () => {
   height: 16px;
 }
 .event image {
-  width: 16px !important;
-  height: 16px !important;
+  width: 14px !important;
+  height: 14px !important;
 }
 .event p {
+  margin-left: 4px;
   font-size: 12px;
   font-weight: 500;
   color: #374151;

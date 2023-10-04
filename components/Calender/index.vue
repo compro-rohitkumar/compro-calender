@@ -8,7 +8,7 @@
       @prevWeek="prevWeek"
       @nextWeek="nextWeek"
       @changeView="changeView"
-      @openModal="toggleModal(new Date(),'from-nevigetion')"
+      @openModal="toggleModal(new Date(), 'from-nevigetion')"
       :view="view"
       :key="view"
     />
@@ -21,7 +21,6 @@
         :selected_event="selected_events"
         @addEvent="toggleHourModel"
         @toggleTaskModal="toggleTaskModal"
-        
       />
     </div>
     <div v-if="view === 'month'">
@@ -32,7 +31,7 @@
           v-for="calenderDay in calenderDays"
           :key="calenderDay.Date"
           :data-date="calenderDay.Date"
-          @click="toggleModal(calenderDay.Date,$event)"
+          @click="toggleModal(calenderDay.Date, $event)"
         >
           <div class="calender-date">
             <p
@@ -54,18 +53,24 @@
           >
             <p>{{ `${event.eventUser} : ${event.name}` }}</p>
           </div>
-          <div style="margin-left: px;" class="hover_text" @click="toggleViewAllEvent(calenderDay.event,calenderDay.extra_event,calenderDay.Date)">
-          <p
-            v-if="calenderDay.extra_event.length"
-            style="
-              margin: 2px;
-              text-align: left;
-              font-weight: bold;
+          <div
+            style="margin-left: px"
+            class="hover_text"
+            @click="
+              toggleViewAllEvent(
+                calenderDay.event,
+                calenderDay.extra_event,
+                calenderDay.Date
+              )
             "
           >
-            {{ `${calenderDay.extra_event.length} more` }}
-          </p>
-        </div>
+            <p
+              v-if="calenderDay.extra_event.length"
+              style="margin: 2px; text-align: left; font-weight: bold"
+            >
+              {{ `${calenderDay.extra_event.length} more` }}
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -73,7 +78,12 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["openModal", "toggleHourModel", "toggleTaskModal","toggleViewAllEvent"]);
+const emit = defineEmits([
+  "openModal",
+  "toggleHourModel",
+  "toggleTaskModal",
+  "toggleViewAllEvent",
+]);
 const view = ref("month");
 let row = 5,
   height = 1,
@@ -95,10 +105,9 @@ const props = defineProps({
   },
 });
 
-
 const currentDate = ref(new Date());
 const calenderDays = ref(null);
-const selected_event= computed(()=>props.selected_events)
+const selected_event = computed(() => props.selected_events);
 const changeView = (viewValue) => {
   view.value = viewValue;
   if (viewValue === "week") {
@@ -131,12 +140,12 @@ const select = (date) => {
 };
 const linkEventToDate = () => {
   const changeIntoNumber = (str) => {
-    if(typeof str === 'number') return str;
-    return (Number)(str.slice(0, -2));
+    if (typeof str === "number") return str;
+    return Number(str.slice(0, -2));
   };
-  const heightRow = changeIntoNumber(heightOfRow)
+  const heightRow = changeIntoNumber(heightOfRow);
   const heightInRem = changeIntoNumber(heightRow) / 16;
-  const totalELemenent = Math.floor(heightInRem / 1.40) -3;
+  const totalELemenent = Math.floor(heightInRem / 1.4) - 3;
   calenderDays.value.forEach((item) => {
     item.event = [];
     item.date = item.Date;
@@ -151,7 +160,8 @@ const linkEventToDate = () => {
         item.Date <= endDate &&
         props.selected_events.includes(event.id)
       ) {
-        if (item.event.length < totalELemenent) item.event = [...item.event, event];
+        if (item.event.length < totalELemenent)
+          item.event = [...item.event, event];
         else item.extra_event = [...item.extra_event, event];
       }
     });
@@ -178,11 +188,9 @@ onMounted(() => {
   row = calenderDays.value.length / 7;
   height = (window.innerHeight / 100) * 80;
   heightOfRow = height / row + "px";
-  
+
   document.documentElement.style.setProperty("--row", heightOfRow);
 });
-
-
 
 onBeforeUpdate(() => {
   row = calenderDays.value.length / 7;
@@ -253,12 +261,14 @@ const changeViewToMonth = () => {
   linkEventToDate();
 };
 
-const toggleModal = (date,e) => {
-  if(e==='from-nevigetion') return emit("openModal", date);
+const toggleModal = (date, e) => {
+  if (e === "from-nevigetion") return emit("openModal", date);
   const target = e.target.parentElement.classList.contains("calender-event");
-  const target2 = e.target.classList.contains("hover_text")||e.target.parentElement.classList.contains("hover_text");
-  
-  if(target||target2) return;
+  const target2 =
+    e.target.classList.contains("hover_text") ||
+    e.target.parentElement.classList.contains("hover_text");
+
+  if (target || target2) return;
   emit("openModal", date);
 };
 const toggleHourModel = (dateAndTime) => {
@@ -267,8 +277,8 @@ const toggleHourModel = (dateAndTime) => {
 const toggleTaskModal = (event) => {
   emit("toggleTaskModal", event);
 };
-const toggleViewAllEvent = (event,extra_event,date) => {
-  emit("toggleViewAllEvent", {event,extra_event,date});
+const toggleViewAllEvent = (event, extra_event, date) => {
+  emit("toggleViewAllEvent", { event, extra_event, date });
 };
 </script>
 
@@ -289,7 +299,8 @@ const toggleViewAllEvent = (event,extra_event,date) => {
 .current {
   background-color: rgb(26, 115, 232);
   border-radius: 50%;
-  padding: 3px;
+  padding: 5px !important;
+  margin: 2px;
 }
 
 .prevnextmonth {
@@ -340,10 +351,9 @@ h1 {
   margin-bottom: 1px !important;
 }
 
-.calender-date p{
+.calender-date p {
   margin: 0;
-  padding: 3px;
-  
+  padding: 5px;
 }
 
 .calender-event {
@@ -351,7 +361,7 @@ h1 {
   justify-content: left;
   align-items: center;
   height: 1.25rem;
-  z-index:5;
+  z-index: 5;
   margin: 3px;
   text-align: left;
   border-radius: 5px;
@@ -408,7 +418,7 @@ h1 {
   overflow: hidden;
   hover: pointer;
 }
-.calender-event:hover{
+.calender-event:hover {
   cursor: pointer;
   opacity: 0.8;
 }
@@ -422,7 +432,7 @@ h1 {
   height: 60vh;
 }
 
-.hover_text{
+.hover_text {
   padding: 0.4px;
   margin-left: 0px;
   border-radius: 4px;
@@ -432,12 +442,11 @@ h1 {
   -webkit-line-clamp: 1;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  margin-right:3px;
+  margin-right: 3px;
   z-index: 5;
 }
-.hover_text:hover{
+.hover_text:hover {
   cursor: pointer;
   background: rgb(176, 172, 172, 0.6);
-  
 }
 </style>
