@@ -1,6 +1,12 @@
 {
   "name": "nuxt-app",
   "private": true,
+  "contributors": [
+    {
+      "name": "Rohit Kumar",
+      "email": "rohit.kumar@comprotechnologies.com"
+    }
+  ],
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
