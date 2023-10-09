@@ -1,4 +1,5 @@
 <template>
+  <page-loading :isLoading="loading" />
   <ModalAddNewEvent
     :date="date"
     :users="users"
@@ -26,7 +27,7 @@
     @closeAllEventModal="toggleViewAllEvent"
     @showTask="showTask"
   />
-  <div class="root-container">
+  <div class="root-container" v-if="!loading">
     <Calender
       @openModal="toggleModal"
       :all_events="userCreatedEvent"
@@ -57,7 +58,7 @@ const userCreatedEventHour = ref([]);
 const taskModal = ref(false);
 const event = ref(null);
 const showAllEvent = ref(false);
-
+const loading = ref(false);
 
 const getId = () => {
   return uuid.v4();
@@ -69,6 +70,7 @@ const getUsers = async () => {
   const res = await data.json();
   const users = res.map((item) => {
     const { _id, name } = item;
+
     return {
       name,
       id: _id,
@@ -78,6 +80,7 @@ const getUsers = async () => {
 };
 
 onMounted(() => {
+  loading.value = true;
   const getData = async () => {
     const link = route.path;
     const data = await getUsers();
@@ -133,6 +136,7 @@ onMounted(() => {
 
   getData();
   getEventHour();
+  loading.value = false;
 });
 const events = ref([
   {
