@@ -137,7 +137,7 @@ onMounted(() => {
   getData();
   setTimeout(() => {
     loading.value = false;
-  }, 300);
+  }, 500);
 });
 const events = ref([
   {
