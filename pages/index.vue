@@ -47,6 +47,7 @@
 
 <script setup>
 import { uuid } from "vue-uuid";
+
 const route = useRoute();
 const modal = ref(false);
 const modalHour = ref(false);
@@ -56,6 +57,8 @@ const userCreatedEventHour = ref([]);
 const taskModal = ref(false);
 const event = ref(null);
 const showAllEvent = ref(false);
+
+
 const getId = () => {
   return uuid.v4();
 };
@@ -77,7 +80,6 @@ const getUsers = async () => {
 onMounted(() => {
   const getData = async () => {
     const link = route.path;
-    console.log(link);
     const data = await getUsers();
     const eventdata = await fetch("/api/event");
     const res = await eventdata.json();

@@ -53,7 +53,8 @@
             what.trim() === '' ||
             eventType.trim() === '' ||
             eventStartDate.trim() === '' ||
-            eventEndDate.trim() === ''
+            eventEndDate.trim() === ''||
+            submitEvent
           "
           @click="handleSubmit"
         >
@@ -118,7 +119,7 @@ const what = ref("");
 const eventType = ref("1");
 const eventDescription = ref("");
 const editEvent = ref(false);
-
+const submitEvent = ref(false);
 if (props.event !== null) {
   editEvent.value = true;
   const user = props.users.find((user) => user.name === props.event.eventUser);
@@ -147,6 +148,7 @@ const handleSubmit = () => {
     alert("Please select user");
     return;
   }
+  submitEvent.value = true;
 
   const evenDetail = {
     eventUser: eventUser.value.id,
@@ -529,5 +531,9 @@ select {
   margin-bottom: 1rem;
   /* height: 2rem; */
 }
+button[disabled=disabled], button:disabled {
+   cursor:not-allowed !important;
+}
+
 </style>
   
