@@ -12,6 +12,13 @@
         class="select"
         @input="handleEvent"
       />
+      <CustomSelect
+        :options="props.users"
+        :eventUser="eventUser"
+        :default="eventUser ? eventUser.name : null"
+        class="select"
+        @input="handleInput"
+      />
       <div class="input">
         <input type="text" required v-model="what" />
         <span class="floating-label">Title</span>
@@ -31,13 +38,6 @@
        </div>ß
         
       </div> -->
-      <CustomSelect
-        :options="props.users"
-        :eventUser="eventUser"
-        :default="eventUser ? eventUser.name : null"
-        class="select"
-        @input="handleInput"
-      />
       <div class="input_container">
         <label class="event_label">Start Date</label>
         <input type="date" v-model="eventStartDate" />
@@ -53,7 +53,7 @@
             what.trim() === '' ||
             eventType.trim() === '' ||
             eventStartDate.trim() === '' ||
-            eventEndDate.trim() === ''||
+            eventEndDate.trim() === '' ||
             submitEvent
           "
           @click="handleSubmit"
@@ -531,9 +531,9 @@ select {
   margin-bottom: 1rem;
   /* height: 2rem; */
 }
-button[disabled=disabled], button:disabled {
-   cursor:not-allowed !important;
+button[disabled="disabled"],
+button:disabled {
+  cursor: not-allowed !important;
 }
-
 </style>
   

@@ -11,6 +11,13 @@
         class="select"
         @input="handleEvent"
       />
+      <CustomSelect
+        :options="props.users"
+        :eventUser="eventUser"
+        :default="eventUser ? eventUser.name : null"
+        class="select"
+        @input="handleInput"
+      />
       <div class="input">
         <input type="text" required v-model="what" />
         <span class="floating-label">Title</span>
@@ -21,13 +28,7 @@
         <span class="floating-label">Description</span>
         <i></i>
       </div>
-      <CustomSelect
-        :options="props.users"
-        :eventUser="eventUser"
-        :default="eventUser ? eventUser.name : null"
-        class="select"
-        @input="handleInput"
-      />
+
       <div class="input_container">
         <label class="event_label">Start Date</label>
         <input type="date" v-model="eventStartDate" />
