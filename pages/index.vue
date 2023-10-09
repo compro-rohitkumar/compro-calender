@@ -58,7 +58,7 @@ const userCreatedEventHour = ref([]);
 const taskModal = ref(false);
 const event = ref(null);
 const showAllEvent = ref(false);
-const loading = ref(false);
+const loading = ref(true);
 
 const getId = () => {
   return uuid.v4();
@@ -135,8 +135,9 @@ onMounted(() => {
   };
 
   getData();
-  getEventHour();
-  loading.value = false;
+  setTimeout(() => {
+    loading.value = false;
+  }, 300);
 });
 const events = ref([
   {
