@@ -78,6 +78,8 @@
 </template>
 
 <script setup>
+
+
 const emit = defineEmits([
   "openModal",
   "toggleHourModel",
@@ -179,6 +181,7 @@ const current = (date) => {
 };
 
 onMounted(() => {
+
   calenderDays.value = getCalenderDays(
     view.value,
     "current",

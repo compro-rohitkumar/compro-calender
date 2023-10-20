@@ -64,6 +64,7 @@ const open = ref(false);
   letter-spacing: 1px;
   margin-top: -1rem;
 }
+
 .selected {
   font-size: 16px !important;
 }

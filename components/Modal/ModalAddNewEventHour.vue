@@ -11,6 +11,13 @@
         class="select"
         @input="handleEvent"
       />
+      <CustomSelect
+        :options="props.users"
+        :eventUser="eventUser"
+        :default="eventUser ? eventUser.name : null"
+        class="select"
+        @input="handleInput"
+      />
       <div class="input">
         <input type="text" required v-model="what" />
         <span class="floating-label">Title</span>
@@ -21,13 +28,7 @@
         <span class="floating-label">Description</span>
         <i></i>
       </div>
-      <CustomSelect
-        :options="props.users"
-        :eventUser="eventUser"
-        :default="eventUser ? eventUser.name : null"
-        class="select"
-        @input="handleInput"
-      />
+
       <div class="input_container">
         <label class="event_label">Start Date</label>
         <input type="date" v-model="eventStartDate" />
@@ -51,7 +52,8 @@
             what.trim() === '' ||
             eventType.trim() === '' ||
             eventStartDate.trim() === '' ||
-            eventEndDate.trim() === ''
+            eventEndDate.trim() === '' ||
+            submitEvent
           "
           @click="handleSubmit"
         >
@@ -108,6 +110,7 @@ const eventDescription = ref("");
 const firstUser = props.users[0];
 const eventUser = ref(null);
 const editEvent = ref(false);
+const submitEvent = ref(false);
 
 const buildDate = (prop) => {
   const data = new Date(prop);
@@ -174,6 +177,7 @@ const handleSubmit = () => {
     alert("Please select user");
     return;
   }
+  submitEvent.value = true;
   const evenDetail = {
     eventUser: eventUser.value.id,
     what: what.value,
@@ -555,6 +559,10 @@ select {
   margin-top: 1rem;
   margin-bottom: 1rem;
   /* height: 2rem; */
+}
+button[disabled="disabled"],
+button:disabled {
+  cursor: not-allowed !important;
 }
 </style>
     

@@ -1,4 +1,5 @@
 <template>
+  <page-loading :isLoading="loading" />
   <ModalAddNewEvent
     :date="date"
     :users="users"
@@ -26,7 +27,7 @@
     @closeAllEventModal="toggleViewAllEvent"
     @showTask="showTask"
   />
-  <div class="root-container">
+  <div class="root-container" v-if="!loading">
     <Calender
       @openModal="toggleModal"
       :all_events="userCreatedEvent"
@@ -47,6 +48,7 @@
 
 <script setup>
 import { uuid } from "vue-uuid";
+
 const route = useRoute();
 const modal = ref(false);
 const modalHour = ref(false);
@@ -56,6 +58,8 @@ const userCreatedEventHour = ref([]);
 const taskModal = ref(false);
 const event = ref(null);
 const showAllEvent = ref(false);
+const loading = ref(true);
+
 const getId = () => {
   return uuid.v4();
 };
@@ -66,6 +70,7 @@ const getUsers = async () => {
   const res = await data.json();
   const users = res.map((item) => {
     const { _id, name } = item;
+
     return {
       name,
       id: _id,
@@ -75,9 +80,9 @@ const getUsers = async () => {
 };
 
 onMounted(() => {
+  loading.value = true;
   const getData = async () => {
     const link = route.path;
-    console.log(link);
     const data = await getUsers();
     const eventdata = await fetch("/api/event");
     const res = await eventdata.json();
@@ -130,7 +135,9 @@ onMounted(() => {
   };
 
   getData();
-  getEventHour();
+  setTimeout(() => {
+    loading.value = false;
+  }, 500);
 });
 const events = ref([
   {
