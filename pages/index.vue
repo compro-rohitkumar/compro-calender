@@ -27,7 +27,7 @@
     @closeAllEventModal="toggleViewAllEvent"
     @showTask="showTask"
   />
-  <div class="root-container" v-if="!loading">
+  <div class="root-container">
     <Calender
       @openModal="toggleModal"
       :all_events="userCreatedEvent"
@@ -37,6 +37,7 @@
       @toggleHourModel="toggleHourModel"
       @toggleTaskModal="toggleTaskModal"
       @toggleViewAllEvent="toggleViewAllEvent"
+      @toggleLoading="loading = false"
     />
     <EventNavBar
       :events="events"
@@ -60,6 +61,9 @@ const event = ref(null);
 const showAllEvent = ref(false);
 const loading = ref(true);
 
+
+
+
 const getId = () => {
   return uuid.v4();
 };
@@ -80,7 +84,6 @@ const getUsers = async () => {
 };
 
 onMounted(() => {
-  loading.value = true;
   const getData = async () => {
     const link = route.path;
     const data = await getUsers();
@@ -135,9 +138,6 @@ onMounted(() => {
   };
 
   getData();
-  setTimeout(() => {
-    loading.value = false;
-  }, 500);
 });
 const events = ref([
   {

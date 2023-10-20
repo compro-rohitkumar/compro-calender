@@ -85,6 +85,7 @@ const emit = defineEmits([
   "toggleHourModel",
   "toggleTaskModal",
   "toggleViewAllEvent",
+  "toggleLoading"
 ]);
 const view = ref("month");
 let row = 5,
@@ -193,6 +194,7 @@ onMounted(() => {
   heightOfRow = height / row + "px";
 
   document.documentElement.style.setProperty("--row", heightOfRow);
+  emit("toggleLoading");
 });
 
 onBeforeUpdate(() => {
